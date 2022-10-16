@@ -1,0 +1,6 @@
+/vendor/
+storage/*.key
+.env
+/.vagrant
+.phpunit.result.cache
+.DS_Store
