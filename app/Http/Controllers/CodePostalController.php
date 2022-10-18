@@ -18,14 +18,14 @@ class CodePostalController extends Controller
     {
 
         $ruta_archivo = "insertaDocumento/";
-        $nombre_archivo = "CPdescarga.txt";
+        $nombre_archivo = "CPdescargafull.csv";
         $direccion_completa = $ruta_archivo . $nombre_archivo;
         try {
             $lines = file($direccion_completa);
             $resultado = [];
             foreach ($lines as $key) {
-                $key = $this->deleteTildes(utf8_encode($key)); 
-                $str = explode('|', strtoupper($key));
+                $key = $this->deleteTildes($key); 
+                $str = explode(',', strtoupper($key));
 
                 if ($str[0] == $code) { 
                     $resultado['zip_code'] = $str[0];
