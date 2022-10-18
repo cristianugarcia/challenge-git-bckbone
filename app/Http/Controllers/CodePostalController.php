@@ -20,6 +20,7 @@ class CodePostalController extends Controller
         $ruta_archivo = "insertaDocumento/";
         $nombre_archivo = "CPdescargafull.csv";
         $direccion_completa = $ruta_archivo . $nombre_archivo;
+        $count=0;
         try {
             $lines = file($direccion_completa);
             $resultado = [];
@@ -28,22 +29,24 @@ class CodePostalController extends Controller
                 $str = explode(',', strtoupper($key));
 
                 if ($str[0] == $code) { 
-                    $resultado['zip_code'] = $str[0];
-                    $resultado['locality'] = $str[5];
+                     if ($count<1) {
+                        $resultado['zip_code'] = $str[0];
+                        $resultado['locality'] = $str[5];
+    
+                        $resultado['federal_entity']['key'] = intval($str[7]);
+                        $resultado['federal_entity']['name'] = $str[4];
+                        $resultado['federal_entity']['code'] = (!$str[9])?null:$str[9];
+                        $resultado['municipality']['key'] = intval($str[11]);
+                        $resultado['municipality']['name'] = $str[3];
 
-                    $resultado['federal_entity']['key'] = intval($str[7]);
-                    $resultado['federal_entity']['name'] = $str[4];
-                    $resultado['federal_entity']['code'] = (!$str[9])?null:$str[9];
+                    }
 
-                    $resultado['settlements']['key'] = intval($str[12]);
-                    $resultado['settlements']['name'] = $str[1];
-                    $resultado['settlements']['zone_type'] = $str[13];
-                    $resultado['settlements']['settlement_type']['name'] = ucfirst(strtolower($str[2]));
-
-                    $resultado['municipality']['key'] = intval($str[11]);
-                    $resultado['municipality']['name'] = $str[3];
-
-                    break;
+                    $resultado['settlements'][$count]['key'] = intval($str[12]);
+                    $resultado['settlements'][$count]['name'] = $str[1];
+                    $resultado['settlements'][$count]['zone_type'] = $str[13];
+                    $resultado['settlements'][$count]['settlement_type']['name'] = ucfirst(strtolower($str[2]));
+                    
+                    $count++;
                 }
             }
             return json_encode($resultado);
